@@ -104,11 +104,26 @@ Educativo y de Aprendizaje Personal
 15. Necesito crear las vistas en auth_app/views.py 
 
     ```bash
-    from django.shortcuts import render
+    from django.shortcuts import render, redirect
+    from django.contrib.auth.decorators import login_required
+    from .forms import UserRegistrationForm
 
-    # Create your views here.
+    def register(request):
+        if request.method == 'POST':
+            form = UserRegistrationForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('login')  # Redirigir al login después del registro
+        else:
+            form = UserRegistrationForm()
+        return render(request, 'auth_app/register.html', {'form': form})
+
+    @login_required
+    def index(request):
+        return render(request, 'auth_app/index.html')
+
     def home(request):
-        return render(request,'auth_app/home.html')
+        return render(request, 'auth_app/home.html')
 
 16. creo en templates/auth_app/home.html
 
@@ -120,15 +135,100 @@ Educativo y de Aprendizaje Personal
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Home</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     </head>
 
-    <body>
-        <h1>Soy el Home</h1>
+    <body class="bg-light">
+        <div class="container mt-5">
+            <h1 class="text-center">Welcome to Home Page</h1>
+            <p class="text-center"><a href="{% url 'login' %}" class="btn btn-primary">Login</a></p>
+        </div>
     </body>
 
     </html>
+17. creo en templates/auth_app/index.html
+    ```bash
+    <!DOCTYPE html>
+    <html lang="en">
 
-17. Necesito configurar el url, en auth_project voy a urls.py
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Home</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+
+    <body class="bg-light">
+        <div class="container mt-5">
+            <h1 class="text-center">Welcome to the Home Page</h1>
+            {% if user.is_authenticated %}
+            <p class="text-center">Hello, {{ user.username }}!</p>
+            <form method="post" action="{% url 'logout' %}" class="text-center">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Logout</button>
+            </form>
+            {% else %}
+            <p class="text-center"><a href="{% url 'login' %}" class="btn btn-primary">Login</a></p>
+            {% endif %}
+        </div>
+    </body>
+
+    </html>
+18. creo en templates/auth_app/login.html
+    ```bash
+        <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Login</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+
+    <body class="bg-light">
+        <div class="container mt-5">
+            <h1 class="text-center mb-4">Login</h1>
+            <div class="card p-4 shadow-sm">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary w-100">Login</button>
+                </form>
+                <p class="text-center mt-3">Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
+            </div>
+        </div>
+    </body>
+
+    </html>
+19. creo en templates/auth_app/register.html
+    ```bash
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Register</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+
+    <body class="bg-light">
+        <div class="container mt-5">
+            <h1 class="text-center mb-4">Register</h1>
+            <div class="card p-4 shadow-sm">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary w-100">Register</button>
+                </form>
+            </div>
+            <p class="text-center mt-3">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+        </div>
+    </body>
+
+    </html>
+20. Necesito configurar el url, en auth_project voy a urls.py
      ```bash
     from django.contrib import admin
     from django.urls import path,include
@@ -138,6 +238,27 @@ Educativo y de Aprendizaje Personal
         path('', include('auth_app.urls')),
     ]
 
-18. En auth_app / creo la urls.py
+21. En auth_app / creo la urls.py
+    ```bash
+    from django.urls import path
+    from django.contrib.auth import views as auth_views
+    from . import views
 
 
+    urlpatterns = [
+        path('login/', auth_views.LoginView.as_view(template_name='auth_app/login.html'), name='login'),
+        path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+        path('register/', views.register, name='register'),
+        path('home/', views.home, name='home'),
+        path('', views.index, name='index'),
+    ]
+
+22. En el auth_project/settings.py ingresamos  LOGIN_REDIRECT_URL = '/' y  LOGOUT_REDIRECT_URL = '/home/'
+    ```bash
+    # Static files (CSS, JavaScript, Images)
+    # https://docs.djangoproject.com/en/5.1/howto/static-files/
+
+    STATIC_URL = 'static/'
+
+    LOGIN_REDIRECT_URL = '/'
+    LOGOUT_REDIRECT_URL = '/home/'
