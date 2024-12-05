@@ -241,19 +241,22 @@ Educativo y de Aprendizaje Personal
 21. En auth_app / creo la urls.py
     ```bash
     from django.urls import path
+    # 1 - lo vamos a llamar para llamar a las vista de usuario 
     from django.contrib.auth import views as auth_views
     from . import views
 
 
     urlpatterns = [
+        #1 LoginView viene de django
         path('login/', auth_views.LoginView.as_view(template_name='auth_app/login.html'), name='login'),
+        #2 LogoutView viene de django
         path('logout/', auth_views.LogoutView.as_view(), name='logout'),
         path('register/', views.register, name='register'),
         path('home/', views.home, name='home'),
         path('', views.index, name='index'),
     ]
 
-22. En el auth_project/settings.py ingresamos  LOGIN_REDIRECT_URL = '/' y  LOGOUT_REDIRECT_URL = '/home/'
+22. En el auth_project/settings.py ingresamos  LOGIN_REDIRECT_URL = '/' y  LOGOUT_REDIRECT_URL = '/home/' 
     ```bash
     # Static files (CSS, JavaScript, Images)
     # https://docs.djangoproject.com/en/5.1/howto/static-files/
@@ -262,3 +265,23 @@ Educativo y de Aprendizaje Personal
 
     LOGIN_REDIRECT_URL = '/'
     LOGOUT_REDIRECT_URL = '/home/'
+
+23. creamos auth_app/forms.py   
+     ```bash
+    from django import forms
+    # de la tabla user que viene por defecto en django al hacer el migrate
+    from django.contrib.auth.models import User
+    # viene por defecto en django para la creacion de formularios y es una clase
+    from django.contrib.auth.forms import UserCreationForm
+
+    class UserRegistrationForm(UserCreationForm):
+        email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class': 'form-control'}))
+
+        class Meta:
+            model = User
+            fields = ['username', 'email', 'password1', 'password2']
+
+        def __init__(self, *args, **kwargs):
+            super(UserRegistrationForm, self).__init__(*args, **kwargs)
+            for fieldname in ['username', 'password1', 'password2']:
+                self.fields[fieldname].widget.attrs['class'] = 'form-control'
