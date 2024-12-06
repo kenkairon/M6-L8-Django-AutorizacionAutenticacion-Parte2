@@ -118,7 +118,7 @@ Educativo y de Aprendizaje Personal
             form = UserRegistrationForm()
         return render(request, 'auth_app/register.html', {'form': form})
 
-    @login_required
+    
     def index(request):
         return render(request, 'auth_app/index.html')
 
@@ -269,13 +269,13 @@ Educativo y de Aprendizaje Personal
 23. creamos auth_app/forms.py   
      ```bash
     from django import forms
-    # de la tabla user que viene por defecto en django al hacer el migrate
+    # de la tabla user que viene por defecto en django
     from django.contrib.auth.models import User
     # viene por defecto en django para la creacion de formularios y es una clase
     from django.contrib.auth.forms import UserCreationForm
 
     class UserRegistrationForm(UserCreationForm):
-        email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class': 'form-control'}))
+        email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class': 'form-control form-control-sm'}))
 
         class Meta:
             model = User
@@ -284,4 +284,8 @@ Educativo y de Aprendizaje Personal
         def __init__(self, *args, **kwargs):
             super(UserRegistrationForm, self).__init__(*args, **kwargs)
             for fieldname in ['username', 'password1', 'password2']:
-                self.fields[fieldname].widget.attrs['class'] = 'form-control'
+                self.fields[fieldname].widget.attrs['class'] = 'form-control form-control-sm'
+
+24. Activamos el Servidor 
+    ```bash
+    python manage.py runserver

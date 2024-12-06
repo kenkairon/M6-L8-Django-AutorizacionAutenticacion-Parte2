@@ -4,15 +4,15 @@ from .forms import UserRegistrationForm
 
 def register(request):
     if request.method == 'POST':
-        form = UserRegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
+        formulario = UserRegistrationForm(request.POST)
+        if formulario.is_valid():
+            formulario.save()
             return redirect('login')  # Redirigir al login después del registro
     else:
-        form = UserRegistrationForm()
-    return render(request, 'auth_app/register.html', {'form': form})
+        formulario = UserRegistrationForm()
+    return render(request, 'auth_app/register.html', {'form': formulario})
 
-@login_required
+
 def index(request):
     return render(request, 'auth_app/index.html')
 
