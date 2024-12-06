@@ -97,11 +97,9 @@ Educativo y de Aprendizaje Personal
     'auth_app',
     ]
 
-14. crear dentro de la carpeta auth_app      templates/auth_app/home.html
-
 ### Creación de Vistas y Modelos
 
-15. Necesito crear las vistas en auth_app/views.py 
+14. Necesito crear las vistas en auth_app/views.py 
 
     ```bash
     from django.shortcuts import render, redirect
@@ -125,7 +123,7 @@ Educativo y de Aprendizaje Personal
     def home(request):
         return render(request, 'auth_app/home.html')
 
-16. creo en templates/auth_app/home.html
+15. creo en templates/auth_app/home.html
 
     ```bash
     <!DOCTYPE html>
@@ -146,7 +144,7 @@ Educativo y de Aprendizaje Personal
     </body>
 
     </html>
-17. creo en templates/auth_app/index.html
+16. creo en templates/auth_app/index.html
     ```bash
     <!DOCTYPE html>
     <html lang="en">
@@ -174,7 +172,7 @@ Educativo y de Aprendizaje Personal
     </body>
 
     </html>
-18. creo en templates/auth_app/login.html
+17. creo en templates/auth_app/login.html
     ```bash
         <!DOCTYPE html>
     <html lang="en">
@@ -201,7 +199,7 @@ Educativo y de Aprendizaje Personal
     </body>
 
     </html>
-19. creo en templates/auth_app/register.html
+18. creo en templates/auth_app/register.html
     ```bash
     <!DOCTYPE html>
     <html lang="en">
@@ -228,7 +226,7 @@ Educativo y de Aprendizaje Personal
     </body>
 
     </html>
-20. Necesito configurar el url, en auth_project voy a urls.py
+19. Necesito configurar el url, en auth_project voy a urls.py
      ```bash
     from django.contrib import admin
     from django.urls import path,include
@@ -238,7 +236,7 @@ Educativo y de Aprendizaje Personal
         path('', include('auth_app.urls')),
     ]
 
-21. En auth_app / creo la urls.py
+20. En auth_app / creo la urls.py
     ```bash
     from django.urls import path
     # 1 - lo vamos a llamar para llamar a las vista de usuario 
@@ -256,7 +254,7 @@ Educativo y de Aprendizaje Personal
         path('', views.index, name='index'),
     ]
 
-22. En el auth_project/settings.py ingresamos  LOGIN_REDIRECT_URL = '/' y  LOGOUT_REDIRECT_URL = '/home/' 
+21. En el auth_project/settings.py ingresamos  LOGIN_REDIRECT_URL = '/' y  LOGOUT_REDIRECT_URL = '/home/' 
     ```bash
     # Static files (CSS, JavaScript, Images)
     # https://docs.djangoproject.com/en/5.1/howto/static-files/
@@ -266,7 +264,7 @@ Educativo y de Aprendizaje Personal
     LOGIN_REDIRECT_URL = '/'
     LOGOUT_REDIRECT_URL = '/home/'
 
-23. creamos auth_app/forms.py   
+22. creamos auth_app/forms.py   
      ```bash
     from django import forms
     # de la tabla user que viene por defecto en django
@@ -286,6 +284,6 @@ Educativo y de Aprendizaje Personal
             for fieldname in ['username', 'password1', 'password2']:
                 self.fields[fieldname].widget.attrs['class'] = 'form-control form-control-sm'
 
-24. Activamos el Servidor 
+23. Activamos el Servidor 
     ```bash
     python manage.py runserver
